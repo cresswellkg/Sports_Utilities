@@ -8,9 +8,9 @@ import os
 
 
 #Specify the starting and ending date to pull box scores
-def BoxScoreScrape(start_year, end_year, start_month, end_month, start_day, end_day):
+def BoxScoreScrape(start_year, end_year, months, start_day, end_day):
     years = [start_year, end_year]
-    months = [start_month,end_month]
+#    months = [start_month,end_month]
     days = range(start_day, end_day)
     
     final = np.empty((0,51))
@@ -116,3 +116,10 @@ def BoxScoreScrape(start_year, end_year, start_month, end_month, start_day, end_
                 status_check.to_csv("box_scores.csv")
 
         
+start_year = 2017
+end_year = 2018
+start_day = 1
+end_day = 32
+months = [11,12,1]
+
+BoxScoreScrape(start_year, end_year, months, start_day, end_day)
