@@ -9,3 +9,8 @@
 `dailyScrape.py` - Like `BoxScoreScrape.py` but designed to be used daily in the task manager
 
 `dailyOddsNCAA.py` - Code used to pull NCAA basketball odds each day from https://www.sportsbookreview.com. Inputs are day, month, year, output file location and whether it is the first run. First run takes a True or False logical argument and must be set to True on the initial run if one wants to populate the column names then turned off for subsequent runs. Each run appends the day's odds to the end of the odds file. The output is Teams, Dates, Spread, Moneyline and the Over for the day.
+
+
+# Suggestions
+
+dailyScrape is much more streamline at the moment. For quickest results first run daily scrape with the first_run option equal to True (This must be done on a day that actually had games played). Then create a list of months, days and years of interest then loop over those. The same process should be followed for dailyOddsNCAA if you want historical odds.
