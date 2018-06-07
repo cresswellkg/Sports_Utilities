@@ -5,16 +5,17 @@ import requests
 import re
 import csv
 import os
+from itertools import product
 
 
 #Specify the starting and ending date to pull box scores
 def BoxScoreScrape(start_year, end_year, months, start_day, end_day):
     years = [start_year, end_year]
-#    months = [start_month,end_month]
+    #months = [start_month,end_month]
     days = range(start_day, end_day)
     
-    final = np.empty((0,51))
-    overres = np.empty((0,51))
+    final = np.empty((0,49))
+    overres = np.empty((0,49))
     for year in years:
         for month in months:
             for day in days:
@@ -93,14 +94,7 @@ def BoxScoreScrape(start_year, end_year, months, start_day, end_day):
                         stat = soup.find_all('td',attrs={'data-stat' : str(cName)})
                         results = np.append(results,stat[endteam1].text.strip())
                         results = np.append(results,stat[len(stat)-1].text.strip())
-                        
-                    #Identify the number of occurences of each team and keep a count
-                    
-                    tot_teams = np.vstack([overres[:,[0]], overres[:,[1]]])
-    
-                    for index in range(0,2): 
-                        teamcount = np.count_nonzero(tot_teams == str(results[index]))+1   
-                        results = np.append(results,teamcount)
+
                      
                     #Append results to an overall list of the days results
                     
@@ -111,15 +105,30 @@ def BoxScoreScrape(start_year, end_year, months, start_day, end_day):
                     results = np.append(results,year)
                     results = np.matrix(results)
                     overres = np.vstack([overres, results])
+ 
                     
-                status_check = pd.DataFrame(overres)
-                status_check.to_csv("box_scores.csv")
-
+                #Assigning proper names to columns
+                
+                home_cols = [ i+"_H" for i in columnName[2:]]
+                away_cols = [ i+"_A" for i in columnName[2:]] 
+                
+                #Combine home and away into alternating columns to match the data
+                
+                res_cols = [x for xs in zip(away_cols, home_cols) for x in xs]
+                
+                #Combining columns from site and manually create names
+                
+                colnames = ["Away", "Home"] + res_cols + ["Day", "Month", "Year"]
+                status_check = pd.DataFrame(overres, columns = colnames)
+                status_check.to_csv("box_scores.csv", index = False)
+                
+                
+                
         
 start_year = 2017
 end_year = 2018
-start_day = 1
+start_day = 20
 end_day = 32
-months = [11,12,1]
+months = [12,1]
 
 BoxScoreScrape(start_year, end_year, months, start_day, end_day)
