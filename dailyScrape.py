@@ -75,7 +75,7 @@ def DailyScrape(day, month, year, box_file):
             results = np.append(results,stat[len(stat)-1].text.strip())
             
         #Identify the number of occurences of each team and keep a count
-        
+                    
         tot_teams = np.vstack([overres[:,[0]], overres[:,[1]]])
     
         for index in range(0,2): 
@@ -93,13 +93,13 @@ def DailyScrape(day, month, year, box_file):
         overres = np.vstack([overres, results])
             
         box_score = pd.DataFrame(overres)
-        box_score.to_csv(box_file, mode = 'a', header = False)
+    box_score.to_csv(box_file, mode = 'a', header = False,  index=False)
 
-day = datetime.now().day-1
-month = datetime.now().month
-year = datetime.now().year
-box_file = "box_scores.csv"
-
-DailyScrape(day, month, year, box_file)
+#day = 10
+#month = 1
+#year = 2017
+#box_file = "box_scores.csv"
+#
+#DailyScrape(day, month, year, box_file)
 
 
