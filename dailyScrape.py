@@ -11,9 +11,9 @@ import requests
 import numpy as np
 from datetime import datetime
 
-def DailyScrape(day, month, year, box_file):
+def DailyScrape(day, month, year, box_file, first_run = False):
 
-    overres = np.empty((0,51))
+    overres = np.empty((0,49))
     
     #For each day pull out the url of the page with all box scores
 
@@ -74,15 +74,7 @@ def DailyScrape(day, month, year, box_file):
             results = np.append(results,stat[endteam1].text.strip())
             results = np.append(results,stat[len(stat)-1].text.strip())
             
-        #Identify the number of occurences of each team and keep a count
-                    
-        tot_teams = np.vstack([overres[:,[0]], overres[:,[1]]])
-    
-        for index in range(0,2): 
-            teamcount = np.count_nonzero(tot_teams == str(results[index]))+1   
-            results = np.append(results,teamcount)
          
-        #Append results to an overall list of the days results
         
         #Add day, month and year to the results matrix
         
@@ -91,15 +83,34 @@ def DailyScrape(day, month, year, box_file):
         results = np.append(results,year)
         results = np.matrix(results)
         overres = np.vstack([overres, results])
-            
+        
+        #Add column names if first time ran
+        
+    if first_run:
+    
+        home_cols = [ i+"_H" for i in columnName[2:]]
+        away_cols = [ i+"_A" for i in columnName[2:]] 
+        
+        #Combine home and away into alternating columns to match the data
+        
+        res_cols = [x for xs in zip(away_cols, home_cols) for x in xs]
+        
+        #Combining columns from site and manually create names
+        
+        colnames = ["Away", "Home"] + res_cols + ["Day", "Month", "Year"]
+        box_score = pd.DataFrame(overres, columns = colnames)
+        box_score.to_csv(box_file, mode = 'a', header = True,  index=False)
+     
+    else:
         box_score = pd.DataFrame(overres)
-    box_score.to_csv(box_file, mode = 'a', header = False,  index=False)
+        box_score.to_csv(box_file, mode = 'a', header = False,  index=False)
 
-#day = 10
+#day = 12
 #month = 1
 #year = 2017
 #box_file = "box_scores.csv"
+#first_run = True
 #
-#DailyScrape(day, month, year, box_file)
+#DailyScrape(day, month, year, box_file, first_run = False)
 
 
