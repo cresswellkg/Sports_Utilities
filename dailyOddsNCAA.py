@@ -5,9 +5,12 @@ Created on Sat Jan 13 22:21:54 2018
 @author: Kelis
 """
 
+
 from bs4 import BeautifulSoup
 import re
+import requests
 import pandas as pd
+import numpy as np
 
 def dailyOddsNCAA(day, month, year, odds_file, first_run = False):
     
@@ -21,7 +24,7 @@ def dailyOddsNCAA(day, month, year, odds_file, first_run = False):
     
     #Query page
     
-    page = requests.get('https://www.sportsbookreview.com/betting-odds/ncaa-basketball/?date='+ str(year) + 
+    page = requests.get('https://classic.sportsbookreview.com/betting-odds/ncaa-basketball/?date='+ str(year) + 
                         str(month) + str(day))
 
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -94,7 +97,7 @@ def dailyOddsNCAA(day, month, year, odds_file, first_run = False):
         
     #Getting overs
     
-    page = requests.get('https://www.sportsbookreview.com/betting-odds/ncaa-basketball/totals/?date='+ str(year) + 
+    page = requests.get('https://classic.sportsbookreview.com/betting-odds/ncaa-basketball/totals/?date='+ str(year) + 
                         str(month) + str(day))
 
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -122,7 +125,7 @@ def dailyOddsNCAA(day, month, year, odds_file, first_run = False):
 
     #Getting moneylines
     
-    page = requests.get('https://www.sportsbookreview.com/betting-odds/ncaa-basketball/money-line/?date='+ str(year) + 
+    page = requests.get('https://classic.sportsbookreview.com/betting-odds/ncaa-basketball/money-line/?date='+ str(year) + 
                         str(month) + str(day))
 
     soup = BeautifulSoup(page.content, 'html.parser')
@@ -197,14 +200,14 @@ def dailyOddsNCAA(day, month, year, odds_file, first_run = False):
 #Code to get today's odds 
 
 #import datetime
-#import os
+import os
 
-#os.chdir("C:\\Users\\Kelis\\Documents\\Sports_Utilities")
-#day = datetime.datetime.now().day
-#month = datetime.datetime.now().month
-#year = datetime.datetime.now().year
-#odds_file = "odds.csv"
-#first_run = True
+os.chdir("C:\\Users\\cresswellkg\\Documents\\Sports_Utilities")
+day = 11
+month = 2
+year = 2017
+odds_file = "odds.csv"
+first_run = True
 
-#dailyOddsNCAA(day,month,year,odds_file,first_run)
+dailyOddsNCAA(day,month,year,odds_file,first_run)
     
