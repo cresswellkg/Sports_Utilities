@@ -65,7 +65,21 @@ def scrapeTrips(day, month, year, box_file):
             visitor_made = ["makes" in plays for plays in visitor_plays] 
             home_made = ["makes" in plays for plays in home_plays] 
             
-            #Filter out free throw makes
+            
+            #Identify non-play events (timeouts, substitutions and deadball rebounds) that can come between free throws
+            
+            visitor_np = ["timeout" in plays or "substitution" in plays or "deadball rebound" in plays for plays in visitor_plays]
+            home_np = ["timeout" in plays or "substitution" in plays or "deadball rebound" in plays  in plays for plays in home_plays]
+
+            #Ignore these values in all other lists
+            
+            visitor_ft = [x for i,x in enumerate(visitor_ft) if visitor_np[i]==False]
+            visitor_made = [x for i,x in enumerate(visitor_made) if visitor_np[i]==False]
+
+            home_ft = [x for i,x in enumerate(home_ft) if home_np[i]==False]
+            home_made = [x for i,x in enumerate(home_made) if home_np[i]==False]
+            
+            #Filter out free throw makes from all other makes
             
             visitor_made = [(visitor_ft[i] == False) & (visitor_made[i] == True) for i in range(0, len(visitor_made))]
             home_made = [(home_ft[i] == False) & (home_made[i] == True) for i in range(0, len(home_made))]
@@ -82,14 +96,14 @@ def scrapeTrips(day, month, year, box_file):
                 elif (visitor_ft[i+1] == True) & (visitor_ft[i+2] == False) & (visitor_made[i-1] == False):
                     visitor_ft[i] = "2Shot"
                     i = i+2
-                elif (visitor_ft[i+1] == True) & (visitor_ft[i+2]) == True & (visitor_made[i-1] == False):
+                elif (visitor_ft[i+1] == True) & (visitor_ft[i+2] == True) & (visitor_made[i-1] == False):
                     visitor_ft[i] = "3shot"
                     i = i+3
                 else:
-                    visitor_ft[i] = "And1"
+                    visitor_ft[i]  = "And1"
                     i = i+1
                     
-                results_visit = [visitor_ft.count("1Shot"), visitor_ft.count("2Shot"), visitor_ft.count("3shot")]
+                results_visit = [visitor_ft.count("1Shot"), visitor_ft.count("2Shot"), visitor_ft.count("3shot"), visitor_ft.count("And1")]
             
             #Repeat for home team
             
@@ -104,14 +118,14 @@ def scrapeTrips(day, month, year, box_file):
                 elif (home_ft[i+1] == True) & (home_ft[i+2] == False) & (home_made[i-1] == False):
                     home_ft[i] = "2Shot"
                     i = i+2
-                elif (home_ft[i+1] == True) & (home_ft[i+2]) == True & (home_made[i-1] == False):
+                elif (home_ft[i+1] == True) & (home_ft[i+2] == True) & (home_made[i-1] == False):
                     home_ft[i] = "3shot"
                     i = i+3
                 else:
                     home_ft[i] = "And1"
                     i = i+1
                     
-                results_home = [home_ft.count("1Shot"), home_ft.count("2Shot"), home_ft.count("3shot")]
+                results_home = [home_ft.count("1Shot"), home_ft.count("2Shot"), home_ft.count("3shot"), home_ft.count("And1")]
     
             #Add everything to final data frame
             new_res = np.append(results, results_visit)
