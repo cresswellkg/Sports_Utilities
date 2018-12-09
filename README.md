@@ -10,6 +10,7 @@
 
 `dailyOddsNCAA.py` - Code used to pull NCAA basketball odds each day from https://www.sportsbookreview.com. Inputs are day, month, year, output file location and whether it is the first run. First run takes a True or False logical argument and must be set to True on the initial run if one wants to populate the column names then turned off for subsequent runs. Each run appends the day's odds to the end of the odds file. The output is Teams, Dates, Spread, Moneyline and the Over for the day.
 
+`scrapeTrips.py` - Uses the play-by-play feature of sports-reference to calculate the number of each type of foul (1-shot, 2-shot, 3-short or And1). The results allow you to accurately calculate the number of trips down the court. (Only available for 2017-2018 season).
 
 # Suggestions
 
