@@ -74,12 +74,12 @@ def dailyOddsNCAA(day, month, year, odds_file, first_run = False):
     team_links = soup.find_all('span', attrs={'class':
         'team-name'})
     
-    teams = [a.get_text() for a in team_links]
+    teams_spread = [a.get_text() for a in team_links]
     
     #Remove the rankings from team names
     
     teams_new = list()
-    for x in teams:
+    for x in teams_spread:
         
         #Find whether the team name can be split (means it has a ranking)
         if len(x.split('\xa0',1)) > 1:
@@ -170,11 +170,41 @@ def dailyOddsNCAA(day, month, year, odds_file, first_run = False):
         del home_line[len(Dates)-1]
         del away_line[len(Dates)-1]
         del overs[len(Dates)-1]
-
         
+    team_links = soup.find_all('span', attrs={'class':
+        'team-name'})
+    
+    teams_over = [a.get_text() for a in team_links]
+    
+    #Second round of teams
+    
+    teams_new_over = list()
+    for x in teams_over:
+        
+        #Find whether the team name can be split (means it has a ranking)
+        if len(x.split('\xa0',1)) > 1:
+            
+            #Pull out team name using split if necessary
+            teams_new_over.append(x.split('\xa0',1)[1])
+            continue
+        
+        teams_new_over.append(x)
+        
+    #Place every other team into away and home arrays
+    
+    teams_away_over = teams_new_over[::2]
+    teams_home_over = teams_new_over[1::2]
+        
+    #Get order for matching
+    set_order = [np.where(pd.Series(teams_away_over).isin(pd.Series(teams_away[i])))[0][0] for i in range(0, 
+                 len(teams_away))]
+    
+    #Reorder overs to match
+    
+    overs = [overs[i] for i in set_order]
+    
     
     #Combine everything
-    
     
     results = pd.DataFrame({
             'Home' :teams_home, 
@@ -200,14 +230,22 @@ def dailyOddsNCAA(day, month, year, odds_file, first_run = False):
 #Code to get today's odds 
 
 #import datetime
+    
+ os.chdir("C:\\Users\\cresswellkg\\Documents\\Sports_Utilities")
+
 import os
 
-os.chdir("C:\\Users\\cresswellkg\\Documents\\Sports_Utilities")
-day = 11
-month = 2
-year = 2017
-odds_file = "odds.csv"
-first_run = True
-
-dailyOddsNCAA(day,month,year,odds_file,first_run)
+odds_file = "C:\\Users\\cresswellkg\\Documents\\Sports_Utilities\\odds.csv"
+first_run = False
+for year in [2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008,2007]:
+    for month in [4,3,2,1,12,11]:
+        for day in range(0,32):
+            print(day)
+            print(year)
+            print(month)
+            try:
+                dailyOddsNCAA(day,month,year,odds_file,first_run)
+            except Exception:
+                print("fail")
+                next
     
